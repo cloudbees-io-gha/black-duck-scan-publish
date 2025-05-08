@@ -1,6 +1,10 @@
 name: 'Black Duck scan and publish to Platform'
 description: 'Runs a Black Duck software composition analysis to detect vulnerabilities, license risks, and policy violations, and publishes results to the CloudBees platform.'
 
+branding:
+  icon: 'command'
+  color: 'purple'
+
 inputs:
   server-url:
     description: The URL of the Black Duck server
