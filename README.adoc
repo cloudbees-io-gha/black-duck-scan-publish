@@ -39,11 +39,6 @@ NOTE: For more information about the Black Duck SCA scanner, refer to the link:h
 | Required?
 | Description
 
-| `cloudbees-pat`
-| String
-| Yes
-| The https://docs.cloudbees.com/docs/cloudbees-platform/latest/workflows/personal-access-token[CloudBees platform personal access token].
-
 | `api-token`
 | String
 | Yes
@@ -82,7 +77,10 @@ The following is a basic example of using this action:
 
 [source,yaml]
 ----
-
+    permissions:
+      id-token: write
+      contents: read
+    steps:
       - name: Scan with Black Duck SCA
         uses: cloudbees-io-gha/black-duck-scan-publish@v1
         with:
@@ -97,7 +95,10 @@ In the following example, the link:https://documentation.blackduck.com/bundle/de
 
 [source,yaml]
 ----
-
+    permissions:
+      id-token: write
+      contents: read
+    steps:
       - name: Scan with Black Duck SCA with params
         uses: cloudbees-io-gha/black-duck-scan-publish@v1
         with:
@@ -128,6 +129,9 @@ on:
 jobs:
   blackduck-codescan:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
