@@ -82,7 +82,7 @@ The following is a basic example of using this action:
       contents: read
     steps:
       - name: Scan with Black Duck SCA
-        uses: cloudbees-io-gha/black-duck-scan-publish@v1
+        uses: cloudbees-io-gha/black-duck-scan-publish@v2
         with:
           api-token: ${{ secrets.BLACK_DUCK_TOKEN }}
           server-url: ${{ vars.BLACK_DUCK_URL }}
@@ -100,9 +100,8 @@ In the following example, the link:https://documentation.blackduck.com/bundle/de
       contents: read
     steps:
       - name: Scan with Black Duck SCA with params
-        uses: cloudbees-io-gha/black-duck-scan-publish@v1
+        uses: cloudbees-io-gha/black-duck-scan-publish@v2
         with:
-          cloudbees-pat: ${{ secrets.CloudBees-platform-PAT }}
           api-token: ${{ secrets.BLACK_DUCK_TOKEN }}
           server-url: ${{ vars.BLACK_DUCK_URL }}
           detect-cli-params: '--logging.level.detect=DEBUG --blackduck.offline.mode=false'
@@ -137,9 +136,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Black Duck scan
-        uses: cloudbees-io-gha/black-duck-scan-publish@v1
+        uses: cloudbees-io-gha/black-duck-scan-publish@v2
         with:
-          cloudbees-pat: ${{ secrets.CLOUDBEES_PAT }}
           api-token: ${{ secrets.BLACKDUCK_API_TOKEN }}
           server-url: ${{ vars.BLACKDUCK_SERVER_URL }}
 
