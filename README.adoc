@@ -86,7 +86,6 @@ The following is a basic example of using this action:
         with:
           api-token: ${{ secrets.BLACK_DUCK_TOKEN }}
           server-url: ${{ vars.BLACK_DUCK_URL }}
-          cloudbees-pat: ${{ secrets.CloudBees-platform-PAT }}
 
 ----
 
