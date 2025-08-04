@@ -44,6 +44,22 @@ inputs:
     description: 'The ID of the step in the workflow'
     required: false
     default: ''
+outputs:
+  critical-count:
+    description: A string containing the number of Critical security findings discovered during the scan.
+    value: ${{steps.blackduck.outputs.critical-count}}
+  very-high-count:
+    description: A string containing the number of Very High security findings discovered during the scan.
+    value: ${{steps.blackduck.outputs.very-high-count}}
+  high-count:
+    description: A string containing the number of High security findings discovered during the scan.
+    value: ${{steps.blackduck.outputs.high-count}}
+  medium-count:
+    description: A string containing the number of Medium security findings discovered during the scan.
+    value: ${{steps.blackduck.outputs.medium-count}}
+  low-count:
+    description: A string containing the number of Low security findings discovered during the scan.
+    value: ${{steps.blackduck.outputs.low-count}}
 
 runs:
   using: "composite"
@@ -87,7 +103,8 @@ runs:
           public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:f725443f3373e3939a1e0258f994fe6a46cf76dc \
           generate-references --asset-type "CODE"
 
-    - name: Run blackduck compliance plugin
+    - id: blackduck
+      name: Run blackduck compliance plugin
       shell: bash
       run: |
         docker run --rm \
