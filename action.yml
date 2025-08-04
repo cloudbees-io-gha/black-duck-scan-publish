@@ -120,7 +120,7 @@ runs:
           -e BLACKDUCK_PROJECT_VERSION="${{ inputs.project-version }}" \
           -e BLACKDUCK_SCAN_MODE="${{ inputs.scan-mode }}" \
           -e BLACKDUCK_DETECT_CLI_PARAMS="${{ inputs.detect-cli-params }}" \
-          docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-blackduck-sca:8577bfdfcd469d06b98cca9d1ae578af4f7d3f88 \
+          020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-blackduck-sca:8577bfdfcd469d06b98cca9d1ae578af4f7d3f88 \
           --mode single
 
     - name: Complete execution plan
