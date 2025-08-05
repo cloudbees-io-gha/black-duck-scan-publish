@@ -98,7 +98,7 @@ runs:
           -e GITHUB_PROVIDER="GITHUB" \
           -e GITHUB_WORKSPACE="$GITHUB_WORKSPACE" \
           -e GITHUB_ENV="$GITHUB_ENV" \
-          -e GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+          -v $GITHUB_OUTPUT:$GITHUB_OUTPUT \
           -e ACTIONS_ID_TOKEN_REQUEST_TOKEN=$ACTIONS_ID_TOKEN_REQUEST_TOKEN \
           -e ACTIONS_ID_TOKEN_REQUEST_URL=$ACTIONS_ID_TOKEN_REQUEST_URL \
           public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:0b7af51618aa66c6e292d845b1e47554fd378d40 \
@@ -143,7 +143,7 @@ runs:
           -e GITHUB_PROVIDER="GITHUB" \
           -e GITHUB_WORKSPACE="$GITHUB_WORKSPACE" \
           -e GITHUB_ENV="$GITHUB_ENV" \
-          -e GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+          -v $GITHUB_OUTPUT:$GITHUB_OUTPUT \
           -e ACTIONS_ID_TOKEN_REQUEST_TOKEN=$ACTIONS_ID_TOKEN_REQUEST_TOKEN \
           -e ACTIONS_ID_TOKEN_REQUEST_URL=$ACTIONS_ID_TOKEN_REQUEST_URL \
           ghcr.io/tamilds08/perf_test/assets-plugin-chain-utils:latest \
