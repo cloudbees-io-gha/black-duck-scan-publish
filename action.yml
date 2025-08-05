@@ -119,7 +119,7 @@ runs:
           -e BLACKDUCK_PROJECT_VERSION="${{ inputs.project-version }}" \
           -e BLACKDUCK_SCAN_MODE="${{ inputs.scan-mode }}" \
           -e BLACKDUCK_DETECT_CLI_PARAMS="${{ inputs.detect-cli-params }}" \
-          public.ecr.aws/l7o7z1g8/actions/plugin-blackduck-sca:984156a62f4ed484f0c337135c30f8a64e95b523 \
+          public.ecr.aws/l7o7z1g8/actions/plugin-blackduck-sca:54d03a70c3e1326f0a860f92aa8ac724455c97c7 \
           --mode single
 
     - id: process-outputs
