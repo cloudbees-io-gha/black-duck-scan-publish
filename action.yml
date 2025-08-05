@@ -47,19 +47,19 @@ inputs:
 outputs:
   critical-count:
     description: A string containing the number of Critical security findings discovered during the scan.
-    value: ${{steps.blackduck.outputs.critical-count}}
+    value: ${{steps.process-outputs.outputs.critical-count}}
   very-high-count:
     description: A string containing the number of Very High security findings discovered during the scan.
-    value: ${{steps.blackduck.outputs.very-high-count}}
+    value: ${{steps.process-outputs.outputs.very-high-count}}
   high-count:
     description: A string containing the number of High security findings discovered during the scan.
-    value: ${{steps.blackduck.outputs.high-count}}
+    value: ${{steps.process-outputs.outputs.high-count}}
   medium-count:
     description: A string containing the number of Medium security findings discovered during the scan.
-    value: ${{steps.blackduck.outputs.medium-count}}
+    value: ${{steps.process-outputs.outputs.medium-count}}
   low-count:
     description: A string containing the number of Low security findings discovered during the scan.
-    value: ${{steps.blackduck.outputs.low-count}}
+    value: ${{steps.process-outputs.outputs.low-count}}
 
 runs:
   using: "composite"
@@ -100,11 +100,10 @@ runs:
           -e GITHUB_ENV="$GITHUB_ENV" \
           -e ACTIONS_ID_TOKEN_REQUEST_TOKEN=$ACTIONS_ID_TOKEN_REQUEST_TOKEN \
           -e ACTIONS_ID_TOKEN_REQUEST_URL=$ACTIONS_ID_TOKEN_REQUEST_URL \
-          public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:f725443f3373e3939a1e0258f994fe6a46cf76dc \
+          public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:984156a62f4ed484f0c337135c30f8a64e95b523 \
           generate-references --asset-type "CODE"
 
-    - id: blackduck
-      name: Run blackduck compliance plugin
+    - name: Run blackduck compliance plugin
       shell: bash
       run: |
         docker run --rm \
@@ -120,10 +119,11 @@ runs:
           -e BLACKDUCK_PROJECT_VERSION="${{ inputs.project-version }}" \
           -e BLACKDUCK_SCAN_MODE="${{ inputs.scan-mode }}" \
           -e BLACKDUCK_DETECT_CLI_PARAMS="${{ inputs.detect-cli-params }}" \
-          public.ecr.aws/l7o7z1g8/actions/plugin-blackduck-sca:97f40d1db438886ca16f3f154b91c6d3aeff4a20 \
+          public.ecr.aws/l7o7z1g8/actions/plugin-blackduck-sca:984156a62f4ed484f0c337135c30f8a64e95b523 \
           --mode single
 
-    - name: Complete execution plan
+    - id: process-outputs
+      name: Complete execution plan
       shell: bash
       run: |
         docker run --rm \
@@ -144,5 +144,5 @@ runs:
           -e GITHUB_ENV="$GITHUB_ENV" \
           -e ACTIONS_ID_TOKEN_REQUEST_TOKEN=$ACTIONS_ID_TOKEN_REQUEST_TOKEN \
           -e ACTIONS_ID_TOKEN_REQUEST_URL=$ACTIONS_ID_TOKEN_REQUEST_URL \
-          public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:f725443f3373e3939a1e0258f994fe6a46cf76dc \
+          public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:984156a62f4ed484f0c337135c30f8a64e95b523 \
           process-outputs
