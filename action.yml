@@ -44,6 +44,22 @@ inputs:
     description: 'The ID of the step in the workflow'
     required: false
     default: ''
+outputs:
+  critical-count:
+    description: A string containing the number of Critical security findings discovered during the scan.
+    value: ${{steps.process-outputs.outputs.critical-count}}
+  very-high-count:
+    description: A string containing the number of Very High security findings discovered during the scan.
+    value: ${{steps.process-outputs.outputs.very-high-count}}
+  high-count:
+    description: A string containing the number of High security findings discovered during the scan.
+    value: ${{steps.process-outputs.outputs.high-count}}
+  medium-count:
+    description: A string containing the number of Medium security findings discovered during the scan.
+    value: ${{steps.process-outputs.outputs.medium-count}}
+  low-count:
+    description: A string containing the number of Low security findings discovered during the scan.
+    value: ${{steps.process-outputs.outputs.low-count}}
 
 runs:
   using: "composite"
@@ -82,9 +98,11 @@ runs:
           -e GITHUB_PROVIDER="GITHUB" \
           -e GITHUB_WORKSPACE="$GITHUB_WORKSPACE" \
           -e GITHUB_ENV="$GITHUB_ENV" \
+          -v $GITHUB_OUTPUT:$GITHUB_OUTPUT \
+          -e GITHUB_OUTPUT="$GITHUB_OUTPUT" \
           -e ACTIONS_ID_TOKEN_REQUEST_TOKEN=$ACTIONS_ID_TOKEN_REQUEST_TOKEN \
           -e ACTIONS_ID_TOKEN_REQUEST_URL=$ACTIONS_ID_TOKEN_REQUEST_URL \
-          public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:0b7af51618aa66c6e292d845b1e47554fd378d40 \
+          public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:2312e778e9df96bc098dde0a12c6c1857c8eec54 \
           generate-references --asset-type "CODE"
 
     - name: Run blackduck compliance plugin
@@ -103,10 +121,11 @@ runs:
           -e BLACKDUCK_PROJECT_VERSION="${{ inputs.project-version }}" \
           -e BLACKDUCK_SCAN_MODE="${{ inputs.scan-mode }}" \
           -e BLACKDUCK_DETECT_CLI_PARAMS="${{ inputs.detect-cli-params }}" \
-          public.ecr.aws/l7o7z1g8/actions/plugin-blackduck-sca:84b00932be153dd4ce77a776bccd764512d256f6 \
+          public.ecr.aws/l7o7z1g8/actions/plugin-blackduck-sca:54d03a70c3e1326f0a860f92aa8ac724455c97c7 \
           --mode single
 
-    - name: Complete execution plan
+    - id: process-outputs
+      name: Complete execution plan
       shell: bash
       run: |
         docker run --rm \
@@ -125,7 +144,9 @@ runs:
           -e GITHUB_PROVIDER="GITHUB" \
           -e GITHUB_WORKSPACE="$GITHUB_WORKSPACE" \
           -e GITHUB_ENV="$GITHUB_ENV" \
+          -v $GITHUB_OUTPUT:$GITHUB_OUTPUT \
+          -e GITHUB_OUTPUT="$GITHUB_OUTPUT" \
           -e ACTIONS_ID_TOKEN_REQUEST_TOKEN=$ACTIONS_ID_TOKEN_REQUEST_TOKEN \
           -e ACTIONS_ID_TOKEN_REQUEST_URL=$ACTIONS_ID_TOKEN_REQUEST_URL \
-          public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:0b7af51618aa66c6e292d845b1e47554fd378d40 \
+          public.ecr.aws/l7o7z1g8/actions/assets-plugin-chain-utils:2312e778e9df96bc098dde0a12c6c1857c8eec54 \
           process-outputs
