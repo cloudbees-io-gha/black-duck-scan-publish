@@ -1,6 +1,23 @@
 = Black Duck scan and publish to Platform
 
-Use this action to scan repositories for dependency vulnerabilities with the Black Duck Software Composition Analysis (SCA) scanner, and then view comprehensive security results in the CloudBees platform.
+Use this action to scan repositories for dependency vulnerabilities with the Black Duck Software Composition Analysis (SCA) scanner, and then view comprehensive security results in CloudBees platform.
+
+Black Duck is a software composition analysis (SCA) scanning solution that helps organizations manage risks associated with open source software in terms of security, license compliance, and code quality.
+
+Add a Black Duck scan to your workflows in CloudBees platform to:
+
+* Detect open source and third-party dependencies in software, source code, and artifacts with multiple analysis techniques.
+* Identify code vulnerabilities and receive timely security advisories.
+* Gain insight into security risks and how to fix vulnerabilities.
+
+CloudBees platform enables you to run a Black Duck scan either implicitly or explicitly.
+
+== Explicit and implicit scan types
+
+An implicit scan is automatically triggered, and an explicit scan is one you configure to be invoked in a step of your workflow.
+To learn more about the differences between explicit and implicit scans, refer to link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/actions#security[].
+
+To set up implicit scanning, refer to link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/aspm/implicit-security-analysis[].
 
 == Prerequisites
 
