@@ -23,7 +23,7 @@ To set up implicit scanning, refer to link:https://docs.cloudbees.com/docs/cloud
 
 Set up the CloudBees platform and GHA to work together, providing key features of the platform to GHA workflows. Refer to link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/github-actions/gha-getting-started[Getting started with GHA integration] for more information.
 
-== Scanner information
+== How the scanner works
 
 The Black Duck SCA scanner architectural components are:
 
@@ -43,7 +43,7 @@ The matching/identification process is based on your package manager data and SH
 . The REST API is used to fetch the bearer token and retrieve the scanning results.
 . The matched open source components are reported as a viewable Bill of Materials that contains the associated security, licensing, and operational risks of the discovered components.
 
-NOTE: For more information about the Black Duck SCA scanner, refer to the link:https://documentation.blackduck.com/bundle/bd-hub/page/Welcome.html[product documentation].
+NOTE: For more information about the Black Duck SCA scanner, refer to the link:https://documentation.blackduck.com/bundle/bd-hub/page/Welcome.html[Black Duck documentation].
 
 == Inputs
 
@@ -88,6 +88,42 @@ NOTE: For more information about the Black Duck SCA scanner, refer to the link:h
 
 |===
 
+
+== Outputs
+
+[cols="2a,1a,4a",options="header"]
+.Output details
+|===
+
+| Output name
+| Data type
+| Description
+
+| `critical-count`
+| String
+| The number of *Critical* security findings discovered during the scan.
+
+| `very-high-count`
+| String
+| The number of *Very high* security findings discovered during the scan.
+
+| `high-count`
+| String
+| The number of *High* security findings discovered during the scan.
+
+| `medium-count`
+| String
+| The number of *Medium* security findings discovered during the scan.
+
+| `low-count`
+| String
+| The number of *Low* security findings discovered during the scan.
+
+|===
+
+IMPORTANT: This action uses GitHub OIDC authentication to securely communicate with CloudBees platform. 
+Be sure to set permissions to `id-token: write` in your workflow.
+
 == Usage examples
 
 The following is a basic example of using this action:
@@ -122,6 +158,109 @@ In the following example, the link:https://documentation.blackduck.com/bundle/de
           server-url: ${{ vars.BLACK_DUCK_URL }}
           detect-cli-params: '--logging.level.detect=DEBUG --blackduck.offline.mode=false'
 
+----
+
+=== Using the action output
+
+You can use the output values from this action in downstream steps and jobs.
+The following example uses the action output in a downstream step of the same job:
+
+[source, yaml,role="default-expanded"]
+----
+name: my-workflow
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  black-duck-scan-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v2
+
+      - id: black-duck-step
+        name: Black Duck scan
+        uses: cloudbees-io-gha/blackduck-scan-publish@v2
+        with:
+          api-token: ${{ secrets.BLACK_DUCK_TOKEN }}
+          server-url: ${{ vars.BLACK_DUCK_URL }}
+
+      - name: Source dir examine
+        run: |
+          docker run --rm -v "${{ github.workspace }}:/work" -w /work golang:1.20.3-alpine3.17 ls -latR /work
+
+      - id: print-outputs-from-black-duck-step
+        name: Print outputs from the upstream Black Duck step
+        run: |
+          # Printing all outputs
+          echo "Outputs from upstream Black Duck step:"
+          echo "Critical count: ${{ steps.black-duck-step.outputs.critical-count }}"
+          echo "Very high count: ${{ steps.black-duck-step.outputs.very-high-count }}"
+          echo "High count: ${{ steps.black-duck-step.outputs.high-count }}"
+          echo "Medium count: ${{ steps.black-duck-step.outputs.medium-count }}"
+          echo "Low count: ${{ steps.black-duck-step.outputs.low-count }}"
+----
+
+The following example uses the action output in a downstream job:
+
+[source, yaml,role="default-expanded"]
+----
+name: my-workflow
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    outputs:
+      black-duck-job-output-critical: ${{ steps.black-duck-step.outputs.critical-count }}
+      black-duck-job-output-very-high: ${{ steps.black-duck-step.outputs.very-high-count }}
+      black-duck-job-output-high: ${{ steps.black-duck-step.outputs.high-count }}
+      black-duck-job-output-medium: ${{ steps.black-duck-step.outputs.medium-count }}
+      black-duck-job-output-low: ${{ steps.black-duck-step.outputs.low-count }}
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v2
+
+      - id: black-duck-step
+        name: Black Duck scan
+        uses: cloudbees-io-gha/blackduck-scan-publish@v2
+        with:
+          api-token: ${{ secrets.BLACK_DUCK_TOKEN }}
+          server-url: ${{ vars.BLACK_DUCK_URL }}
+
+      - name: Source dir examine
+        run: |
+          ls -latR ${GITHUB_WORKSPACE}
+
+  job2:
+    runs-on: ubuntu-latest
+    needs: job1
+    steps:
+      - id: print-outputs-from-job1
+        name: Print outputs from upstream job1
+        run: |
+          # Printing all outputs
+          echo "Outputs from upstream Black Duck job:"
+          echo "Critical count: ${{ needs.job1.outputs.black-duck-job-output-critical }}"
+          echo "Very high count: ${{ needs.job1.outputs.black-duck-job-output-very-high }}"
+          echo "High count: ${{ needs.job1.outputs.black-duck-job-output-high }}"
+          echo "Medium count: ${{ needs.job1.outputs.black-duck-job-output-medium }}"
+          echo "Low count: ${{ needs.job1.outputs.black-duck-job-output-low }}"
 ----
 
 === Full workflow and run example
@@ -160,7 +299,7 @@ jobs:
 ----
 --
 
-After the GHA run has completed, the security findings are collected and displayed in the CloudBees platform https://docs.cloudbees.com/docs/cloudbees-platform/latest/aspm/security-center[Security center] of the component containing the workflow.
+After the GHA run has completed, the security findings are collected and displayed in the link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/aspm/security-center[Security center] of the component containing the workflow.
 
 == License
 
@@ -169,5 +308,5 @@ link:https://opensource.org/license/mit/[MIT license].
 
 == References
 
-* Learn more about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/github-actions/intro[Using GitHub Actions with the CloudBees platform].
-* Learn about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/[the CloudBees platform].
+* Learn more about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/github-actions/intro[Using GitHub Actions with CloudBees platform].
+* Learn about link:https://docs.cloudbees.com/docs/cloudbees-platform/latest/[CloudBees platform].
